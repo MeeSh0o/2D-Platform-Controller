@@ -9,9 +9,6 @@ public class Movement : MonoBehaviour
     
     protected Collider2D coll;
 
-
-    //protected Vector2 currentMove;
-
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();

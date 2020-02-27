@@ -6,11 +6,11 @@ using UnityEngine.UI;
 public class StateWhathcer : MonoBehaviour
 {
     public Text states;
-    public PlayerInput PI;
+    public Player PI;
 
     private void Start()
     {
-        PI = GameObject.Find("Player").GetComponent<PlayerInput>();
+        PI = GameObject.Find("Player").GetComponent<Player>();
     }
     private void Update()
     {
@@ -18,7 +18,7 @@ public class StateWhathcer : MonoBehaviour
             "Velocity: " + PI.rb.velocity.ToString() + "\n" +
             "Is Ground: " + PI.isGround.ToString() + "\n" +
             "Is Jump: " + PI.isJump.ToString() + "\n" +
-            "Jump Count: " + PI.jumpCount.ToString() + "\n" +
+            "Jump Count: " + PI.currentJumpCount.ToString() + "\n" +
             "State: " + PI.state.ToString() + "\n";
         states.text = _text;
     }

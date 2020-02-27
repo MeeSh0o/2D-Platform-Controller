@@ -63,8 +63,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\GravityTest.cs" />
     <Compile Include="Assets\Scripts\Movement.cs" />
-    <Compile Include="Assets\Scripts\PlayerInput.cs" />
+    <Compile Include="Assets\Scripts\Player.cs" />
     <Compile Include="Assets\Scripts\StateWhathcer.cs" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>D:/ProjectsDatabase/Unity Projects/CubePlatformer/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
