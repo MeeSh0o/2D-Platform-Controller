@@ -173,7 +173,7 @@ public class Player : Movement
 
         if (Mathf.Abs(rb.velocity.x) > Mathf.Abs(horizontalMove)) // 超速状态下 减速
         {
-            if (horizontalMove * rb.velocity.x <= 0 || state.Equals(StateEnum.Ground))// 只有按住按键才能保持超速，否则减速,落地减速
+            if (horizontalMove * rb.velocity.x <= 0 || state.Equals(StateEnum.Ground) || state.Equals(StateEnum.Drop))// 只有按住按键才能保持超速，否则减速,落地减速
             {
                 float drag = 0;
                 switch (state)

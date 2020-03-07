@@ -394,7 +394,7 @@ PrefabInstance:
     - target: {fileID: 8286071729508125929, guid: c6b3eef8f913fb44485bd2a440e61e56,
         type: 3}
       propertyPath: dashFreezeTime
-      value: 0.3
+      value: 0.18
       objectReference: {fileID: 0}
     - target: {fileID: 8286071729508125930, guid: c6b3eef8f913fb44485bd2a440e61e56,
         type: 3}
