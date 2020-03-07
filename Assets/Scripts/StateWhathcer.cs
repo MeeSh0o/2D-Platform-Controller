@@ -19,7 +19,8 @@ public class StateWhathcer : MonoBehaviour
             "Is Ground: " + PI.isGround.ToString() + "\n" +
             "Is Jump: " + PI.isJump.ToString() + "\n" +
             "Jump Count: " + PI.currentJumpCount.ToString() + "\n" +
-            "State: " + PI.state.ToString() + "\n";
+            "State: " + PI.state.ToString() + "\n" +
+            "Stamina: " + PI.currentStamina.ToString() + "\n";
         states.text = _text;
     }
 

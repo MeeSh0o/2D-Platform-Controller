@@ -1,35 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &8286071728905542955
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 8286071728905542954}
-  m_Layer: 0
-  m_Name: GameObject
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &8286071728905542954
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8286071728905542955}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.5, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 8286071729508125930}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8286071729508125934
 GameObject:
   m_ObjectHideFlags: 0
@@ -60,9 +30,8 @@ Transform:
   m_GameObject: {fileID: 8286071729508125934}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 4.644194, y: -1.7510004, z: -1.4101562}
-  m_LocalScale: {x: -1, y: 1.7, z: 1}
-  m_Children:
-  - {fileID: 8286071728905542954}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -137,8 +106,8 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
-  m_EdgeRadius: 0
+  m_Size: {x: 0.9, y: 0.9}
+  m_EdgeRadius: 0.05
 --- !u!50 &8286071729508125928
 Rigidbody2D:
   serializedVersion: 4
@@ -154,7 +123,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 3.2
+  m_GravityScale: 3
   m_Material: {fileID: 6200000, guid: 713742acef3739c478e6d3374cf23541, type: 2}
   m_Interpolate: 0
   m_SleepingMode: 1
@@ -173,16 +142,62 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 8286071729508125928}
-  speed: 7.5
-  jumpForce: 15
+  jump: 1
+  wallGrab: 0
+  wallSlice: 0
+  wallClimb: 1
+  wallJump: 1
+  horizontalDash: 1
+  moveAccelerationTime: 0.3
+  speed: 8
+  jumpForce: 17.5
+  airMoveAccelerationTime: 0.5
+  jumpCount: 1
+  dashDistance: 7
+  dashTimeLast: 0.8
   state: 0
-  isGround: 1
+  isGround: 0
   isJump: 0
-  upGravityMultiplier: 1
-  releaseGravityMultiplier: 5
-  downGravityMultiplier: 2.5
-  groundCheck: {fileID: 8286071728905542954}
-  ground:
+  byWall: 0
+  wallSide: 0
+  isGrab: 0
+  isSlice: 0
+  canMove: 1
+  canJump: 1
+  canDash: 1
+  climbSpeed: 0
+  sliceSpeed: 0
+  isStamina: 0
+  stamina: 0
+  grabCost: 0
+  climbCost: 0
+  sliceCost: 0
+  wallJumpHroi: 10
+  jumpFreezeTime: 0.05
+  airJumpFreezeTime: 0.1
+  onWallJumpFreezeTime: 0.3
+  byWallJumpFreezeTime: 0.25
+  dashFreezeTime: 0
+  jumpGravityMultiplier: 1
+  releaseGravityMultiplier: 3.3333333
+  dropGravityMultiplier: 2.5
+  checkLayer:
     serializedVersion: 2
     m_Bits: 256
-  jumpCount: 2
+  leftRayPositin:
+  - {x: -0.5, y: 0.5, z: 0}
+  - {x: -0.5, y: 0, z: 0}
+  - {x: -0.5, y: -0.5, z: 0}
+  rightRayPosition:
+  - {x: 0.5, y: 0.5, z: 0}
+  - {x: 0.5, y: 0, z: 0}
+  - {x: 0.5, y: -0.5, z: 0}
+  bottomRayPosition:
+  - {x: -0.5, y: -0.5, z: 0}
+  - {x: 0, y: -0.5, z: 0}
+  - {x: 0.5, y: -0.5, z: 0}
+  rayLength: 0.1
+  currentJumpCount: 0
+  currentStamina: 0
+  dirMoveHor: 0
+  dirMoveVer: 0

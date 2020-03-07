@@ -14,13 +14,13 @@ public class Movement : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         coll = GetComponent<Collider2D>();
         //anim = GetComponent<Animator>();
+
+        Initiate();
     }
 
-
-    private void FixedUpdate()
-    {
-        //rb.velocity = currentMove * Time.fixedDeltaTime;
-    }
-
+    /// <summary>
+    /// 初始化方法，实现在派生类
+    /// </summary>
+    public virtual void Initiate() { }
 
 }
