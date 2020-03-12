@@ -36,8 +36,6 @@ public class Player : Movement
     public bool isJump;
     public bool byWall;
     public int wallSide; // 1为左，-1为右,0为不靠墙或者两边都靠墙，可根据bywall区分
-    public bool isGrab;
-    public bool isSlice;
     public bool canMove = true;
     public bool canJump = true;
     public bool canDash = true;
@@ -83,16 +81,12 @@ public class Player : Movement
     bool dashPressed;
     int facingRight = 1; // 面朝右时为正1，左为负1
     public static float defaultGravityScale = 3; // 默认重力倍数
-    private float moveAccelerate; // 移动加速度
-    private float airAccelerate; // 空中加速度
-    private float dashSpeed; // 冲刺的速度
     public Movement underMovementObject = null; // 脚下的物体
     public Movement leftMovementObject = null; // 左边的的物体
     public Movement rightMovementObject = null; // 右边的物体
     public Movement currentMovementObject = null; // 当前附着的物体
     private float currentWolfJumpTime; // 狼跳计时
     float ezJumpTimer; // 使得提前按跳也能生效
-    Vector2 colliderSize; // 用于投射的碰撞体大小,如果换了碰撞体，需把jump()里的投射自己处理一下
     Coroutine currentFreezeMove = null;
     Coroutine currentFreezeJump = null;
     Coroutine currentDash = null;
@@ -143,7 +137,6 @@ public class Player : Movement
     public override void Initiate()
     {
         if (rb.gravityScale != defaultGravityScale) rb.gravityScale = defaultGravityScale;
-        colliderSize = GetComponent<BoxCollider2D>().size;
         if (useStamina) StaminaReset();
         currentDashCount = dashCount;
     }
@@ -154,7 +147,7 @@ public class Player : Movement
         {
             jumpPressed = true;
         }
-        if (Input.GetButtonDown("Fire1"))
+        if (Input.GetButtonDown("Dash"))
         {
             dashPressed = true;
         }
@@ -217,7 +210,7 @@ public class Player : Movement
     {
         if (!jump) return false;
 
-        if (!canJump) return false;
+        if (!canJump) return jumpPressed = false;
 
         if (!jumpPressed) return false;
 
@@ -226,6 +219,9 @@ public class Player : Movement
             isJump = true;
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
             jumpPressed = false;
+
+            if (state.Equals(StateEnum.Dash)) 
+                DashOut();
 
             StateChange(StateEnum.Jump);
 
@@ -424,12 +420,11 @@ public class Player : Movement
         
         if (currentDashCount <= 0) return dashPressed = false;
 
-        if(Input.GetAxisRaw("Horizontal") == 0) return dashPressed = false; // 暂时不处理面向问题
-
         if (dashPressed) 
         {
             DashIn();
             FreezeMove(dashFreezeTime);
+            FreezeJump(dashFreezeTime - .05f);
         }
 
         return dashPressed = false;
@@ -442,20 +437,23 @@ public class Player : Movement
         currentDash = StartCoroutine(Timer(DashOut, dashTimeLast));
 
         float speed = dashDistance / dashTimeLast;
-        
+        float hori = Mathf.Abs(Input.GetAxisRaw("Horizontal")) > 0.01 ? Input.GetAxisRaw("Horizontal") : facingRight;
+
         if (octDash)
         {
-            rb.velocity = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")).normalized * speed;
+            
+            rb.velocity = new Vector2(hori, Input.GetAxisRaw("Vertical")).normalized * speed;
         }
         else
         {
-            rb.velocity = new Vector2(Input.GetAxisRaw("Horizontal") * speed, 0);
+            rb.velocity = new Vector2(hori * speed, 0);
         }
-
+        currentDashCount -= 1;
         
     }
     void DashOut()
     {
+        if (currentDash != null) StopCoroutine(currentDash);
         if(currentFreezeMove != null)
         {
             StopCoroutine(currentFreezeMove);
@@ -463,7 +461,7 @@ public class Player : Movement
         }
 
         StateChange(StateEnum.Default);
-        currentDashCount -= 1;
+
     }
 
     /// <summary>
@@ -471,7 +469,7 @@ public class Player : Movement
     /// </summary>
     void BetterGravity()
     {
-        if (state.Equals(StateEnum.Drop))
+        if (state.Equals(StateEnum.Drop) || state.Equals(StateEnum.Default))
         {
             //rb.velocity += Vector2.up * Physics2D.gravity.y * (dropGravityMultiplier - 1) * Time.fixedDeltaTime;
             //rb.AddForce(Physics.gravity * rb.mass * (dropGravityMultiplier - 1));
@@ -505,7 +503,7 @@ public class Player : Movement
         //isGround = Physics2D.OverlapCircle(groundCheck.position, 0.1f, ground);
 
 
-        if (isGround)
+        if (isGround && !state.Equals(StateEnum.Dash))
         {
             StateChange(StateEnum.Ground);
         }
@@ -701,22 +699,28 @@ public class Player : Movement
     /// </summary>
     void FacingDir(int right = 0)
     {
-        // 逻辑换向 没有攀附看速度，脚底有攀附看输入，攀墙看墙
         if (right == 0)
         {
-            if (state.Equals(StateEnum.WallGrab) || state.Equals(StateEnum.WallSlice)) // 除了攀附以外的情况都可以自动化，攀附则根据攀附对象决定朝向
+            if (currentMovementObject == null)
             {
-                facingRight = rb.velocity.x > 0 ? 1 : -1;
+                if (!state.Equals(StateEnum.WallGrab) && !state.Equals(StateEnum.WallSlice)) // 除了攀附以外的情况都可以自动化，攀附则根据攀附对象决定朝向
+                {
+                    facingRight = rb.velocity.x > 0 ? 1 : -1;
+                }
             }
         }
         else facingRight = right;
 
-        // 表现换向
-        //if (isFlixed ? (rb.velocity.x > 0.01f) : (rb.velocity.x < 0.01f))
-        //{
-        //    isFlixed = !isFlixed;
-        //    transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
-        //}
+        //表现换向
+        if (facingRight == 1 ? (transform.localScale.x < -0.01f) : (transform.localScale.x > 0.01f))
+        {
+            Flix();
+        }
+    }
+
+    void Flix()
+    {
+        transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
     }
 
     /// <summary>
@@ -729,8 +733,6 @@ public class Player : Movement
         freeAction();
         yield return null;
     }
-
-
 
     /// <summary>
     /// 禁止跳跃，我也不知道有啥用……反正先写了
